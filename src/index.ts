@@ -1,14 +1,13 @@
 import express from "express";
 import "dotenv/config";
 
+import routes from "./routes";
+
 const app = express();
 const port = process.env.APP_PORT || 3000;
 
-app.get("/", (req, res) => {
-  return res.json({
-    message: "Hello World",
-  });
-});
+app.use(express.json());
+app.use("/", routes);
 
 // error 404 handler
 app.use((req, res) => {
