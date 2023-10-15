@@ -1,15 +1,19 @@
-import { buildEvent, buildEvents } from "./events.fixture";
+import {
+  queryGetAllEvents,
+  queryGetEventById,
+  queryInsertEvent,
+} from "./events.repository";
 
 import type { EventInput } from "./events.type";
 
 export const getAllEvents = async () => {
-  return buildEvents();
+  return queryGetAllEvents();
 };
 
 export const getEventById = async (id: number) => {
-  return buildEvent({ id });
+  return queryGetEventById(id);
 };
 
 export const newEvent = async (data: EventInput) => {
-  return buildEvent(data);
+  return queryInsertEvent(data);
 };

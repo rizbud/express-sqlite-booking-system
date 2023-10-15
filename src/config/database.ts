@@ -34,4 +34,6 @@ export const migrateUp = () => {
   console.log("Migration completed");
 };
 
+db.pragma("journal_mode = WAL");
+
 export default db;
