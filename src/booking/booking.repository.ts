@@ -2,7 +2,7 @@ import db from "../config/database";
 
 import type { Booking, BookingInput } from "./booking.type";
 
-export const queryGetBookingsByEventId = (eventId: number) => {
+export const queryGetBookingsByEventId = (eventId: number | bigint) => {
   return db
     .prepare("SELECT * FROM bookings WHERE event_id = ?")
     .all(eventId) as Booking[];

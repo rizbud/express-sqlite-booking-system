@@ -3,6 +3,7 @@ export interface Booking {
   event_id: number;
   name: string;
   email: string;
+  number_of_seats: number;
   created_at: string;
 }
 

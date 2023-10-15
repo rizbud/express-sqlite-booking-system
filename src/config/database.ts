@@ -8,11 +8,9 @@ export const migrateUp = () => {
     "name" VARCHAR NOT NULL,
     "event_date" DATE NOT NULL,
     "capacity" INTEGER NOT NULL DEFAULT 1,
-    "available_seats" INTEGER NOT NULL DEFAULT 1,
     "booking_started_at" DATETIME NOT NULL,
     "booking_ended_at" DATETIME NOT NULL,
-    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
   )`);
 
   db.exec(`CREATE TABLE IF NOT EXISTS "bookings" (
@@ -27,10 +25,6 @@ export const migrateUp = () => {
 
   db.exec(
     `CREATE INDEX IF NOT EXISTS "index_bookings_on_event_id" ON "bookings" ("event_id")`
-  );
-
-  db.exec(
-    `CREATE INDEX IF NOT EXISTS "index_available_seats_on_events" ON "events" ("available_seats")`
   );
 
   db.exec(

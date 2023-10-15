@@ -1,27 +1,44 @@
-import { format } from "date-fns";
 import db from "../config/database";
 
 import type { Event, EventInput } from "./events.type";
 
 export const queryGetAllEvents = () => {
-  return db.prepare("SELECT * FROM events").all() as Event[];
+  const query = `SELECT
+      e.id, e.name, e.event_date, e.capacity,
+      e.capacity - COALESCE(SUM(b.number_of_seats), 0) AS available_seats,
+      e.booking_started_at, e.booking_ended_at, e.created_at
+    FROM
+      events e
+    LEFT JOIN
+      bookings b ON b.event_id = e.id
+    GROUP BY
+      e.id`;
+
+  return db.prepare(query).all() as Event[];
 };
 
-export const queryGetEventById = (id: number) => {
-  return db.prepare("SELECT * FROM events WHERE id = ?").get(id) as
-    | Event
-    | undefined;
-};
+export const queryGetEventById = (id: number | bigint) => {
+  const query = `SELECT
+      e.id, e.name, e.event_date, e.capacity,
+      e.capacity - COALESCE(SUM(b.number_of_seats), 0) AS available_seats,
+      e.booking_started_at, e.booking_ended_at, e.created_at
+    FROM
+      events e
+    LEFT JOIN
+      bookings b ON b.event_id = e.id
+    WHERE
+      e.id = ?
+    GROUP BY
+      e.id`;
 
-export const queryGetEventAvailableSeatsById = (id: number) => {
-  return db
-    .prepare("SELECT available_seats FROM events WHERE id = ?")
-    .get(id) as Pick<Event, "available_seats"> | undefined;
+  const result = db.prepare(query).get(id) as Event | undefined;
+
+  return result;
 };
 
 export const queryInsertEvent = (data: EventInput) => {
   const query =
-    "INSERT INTO events (name, event_date, capacity, available_seats, booking_started_at, booking_ended_at) VALUES (?, ?, ?, ?, ?, ?)";
+    "INSERT INTO events (name, event_date, capacity, booking_started_at, booking_ended_at) VALUES (?, ?, ?, ?, ?)";
 
   const insert = db
     .prepare(query)
@@ -29,31 +46,10 @@ export const queryInsertEvent = (data: EventInput) => {
       data.name,
       data.event_date,
       data.capacity,
-      data.capacity,
       data.booking_started_at,
       data.booking_ended_at
     );
-  const result = db
-    .prepare("SELECT * FROM events WHERE id = ?")
-    .get(insert.lastInsertRowid);
+  const result = queryGetEventById(insert.lastInsertRowid);
 
-  return result as Event;
-};
-
-export const queryUpdateEventAvailableSeatsById = (
-  eventId: number,
-  availableSeats: number
-) => {
-  const query =
-    "UPDATE events SET available_seats = ?, updated_at = ? WHERE id = ?";
-
-  const now = new Date().toISOString();
-  const updatedAt = format(new Date(now.slice(0, -1)), "yyyy-MM-dd HH:mm:ss");
-
-  const update = db.prepare(query).run(availableSeats, updatedAt, eventId);
-  const result = db
-    .prepare("SELECT * FROM events WHERE id = ?")
-    .get(update.lastInsertRowid);
-
-  return result as Event;
+  return result;
 };
