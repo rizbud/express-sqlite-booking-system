@@ -11,7 +11,8 @@ export const migrateUp = () => {
     "available_seats" INTEGER NOT NULL DEFAULT 1,
     "booking_started_at" DATETIME NOT NULL,
     "booking_ended_at" DATETIME NOT NULL,
-    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
   )`);
 
   db.exec(`CREATE TABLE IF NOT EXISTS "bookings" (
@@ -19,6 +20,7 @@ export const migrateUp = () => {
     "event_id" INTEGER NOT NULL,
     "name" VARCHAR NOT NULL,
     "email" VARCHAR NOT NULL UNIQUE,
+    "number_of_seats" INTEGER NOT NULL DEFAULT 1,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY ("event_id") REFERENCES "events" ("id")
   )`);
@@ -28,7 +30,11 @@ export const migrateUp = () => {
   );
 
   db.exec(
-    `CREATE INDEX IF NOT EXISTS "index_capacity_on_events" ON "events" ("capacity")`
+    `CREATE INDEX IF NOT EXISTS "index_available_seats_on_events" ON "events" ("available_seats")`
+  );
+
+  db.exec(
+    `CREATE INDEX IF NOT EXISTS "index_number_of_seats_on_bookings" ON "bookings" ("number_of_seats")`
   );
 
   console.log("Migration completed");

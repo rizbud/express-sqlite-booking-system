@@ -4,7 +4,7 @@ import { createBooking, getBookings } from "./booking.controller";
 
 const routes = express.Router();
 
-routes.get("/", getBookings);
-routes.post("/", createBooking);
+routes.get("/:id/booking", getBookings);
+routes.post("/:id/booking", createBooking);
 
 export default routes;

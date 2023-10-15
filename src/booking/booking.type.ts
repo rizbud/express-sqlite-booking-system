@@ -7,6 +7,8 @@ export interface Booking {
 }
 
 export interface BookingInput {
+  event_id: number;
   name: string;
   email: string;
+  number_of_seats: number;
 }
