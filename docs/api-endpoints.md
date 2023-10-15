@@ -171,7 +171,7 @@ Create a booking for an event.
 
   ```json
   {
-    "message": "Bookings with event id 1 retrieved successfully!",
+    "message": "Booking created successfully!",
     "data": {
       "id": 1,
       "event_id": 1,
