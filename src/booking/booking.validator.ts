@@ -3,9 +3,10 @@ import type { BookingInput } from "./booking.type";
 export const createBookingValidator = (booking: Partial<BookingInput>) => {
   if (!booking) return "All fields are required!";
 
-  if (!booking.name) return "Name is required!";
-  if (!booking.email) return "Email is required!";
-  if (!booking.number_of_seats) return "Number of Seats is required!";
+  let message: string[] = [];
+  if (!booking.name) message.push("name is required!");
+  if (!booking.email) message.push("email is required!");
+  if (!booking.number_of_seats) message.push("number_of_seats is required!");
 
-  return null;
+  return message.length ? (message.length === 1 ? message[0] : message) : null;
 };
